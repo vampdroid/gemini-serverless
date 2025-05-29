@@ -1,10 +1,15 @@
 
 export default async function handler(req, res) {
+	// Set CORS headers
+	res.setHeader('Access-Control-Allow-Origin', 'https://yashkukreja.com'); // Or your domain for stricter control
+	res.setHeader('Access-Control-Allow-Methods', 'POST');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
 	if (req.method !== 'POST') {
 		return res.status(405).json({ error: 'Only POST allowed' });
 	}
 
-	const { prompt } = req.body;
+	const { prompt } = req.body || "Default prompt";
 	const apiKey = process.env.GEMINI_API_KEY;
 
 	const geminiRes = await fetch(
