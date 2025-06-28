@@ -47,7 +47,8 @@ export default async function handler(req, res) {
 		if (!response.ok) {
 			throw new Error(reponse);
 		}
-		const videos = await response.json().items;
+		let videos = await response.json();
+		videos = videos.items;
 		const data = videos.map(video => ({
 				id: video.id.videoId,
 				title: video.snippet.title,
