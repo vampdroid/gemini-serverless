@@ -32,12 +32,17 @@ export default async function handler(req, res) {
 			throw new Error(reponse);
 		}
 		const data = await response.json();
-		const video = data.items[0];
-		const videoId = video.id.videoId;
-		const title = video.snippet.title;
-		const thumbnail = video.snippet.thumbnails.high.url;
+		const videos = data.items;
 
-		res.status(200).json({ videoId, title, thumbnail });
+		res.status(200).json( 
+			videos.map(video => ({
+				id: video.id.videoId,
+				title: video.snippet.title,
+				description: video.snippet.description,
+				thumbnail: video.snippet.thumbnails.default.url,
+				publishedAt: video.snippet.publishedAt
+			}))
+		);
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
