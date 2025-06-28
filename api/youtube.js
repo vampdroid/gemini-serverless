@@ -19,14 +19,17 @@ export default async function handler(req, res) {
 		return res.status(405).json({ error: 'Only GET, OPTIONS allowed' });
 	}
 
-	const channelId = process.env.YOUTUTBE_CHANNEL_ID;
-	const apiKey = process.env.YOUTUBE_API_KEY;
+	const channelId = 'UCU8kHG85xraWf7N2dp8JRpQ';
+	const apiKey = process.env.YOUTUBE_API_KEY; // Ensure you set this in your environment variables
 	const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=5`;
 
 	try {
 		const response = await fetch(apiUrl);
+
+	    console.log("API Key: ", apiKey ? "Loaded" : "Missing");
+		console.log("Channel ID: ", channelId);
 		if (!response.ok) {
-			throw new Error('Network response was not ok');
+			throw new Error(reponse);
 		}
 		const data = await response.json();
 		const video = data.items[0];
