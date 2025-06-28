@@ -1,3 +1,9 @@
+let cache = {
+	data: null,
+	timestamp: 0,
+	ttl: 1000 * 60 * 60 * 12 // 12 hours
+};
+
 // Create a api for the above code snippet. Take ref from the chat.js file above.
 export default async function handler(req, res) {
 	// Set CORS headers
@@ -20,6 +26,14 @@ export default async function handler(req, res) {
 	}
 
 	const maxResults = parseInt(req.query.maxResults) || 4;
+	const now = Date.now();
+
+	if (cache.data && now - cache.timestamp < cache.ttl) {
+		return res.status(200).json({
+			data: cache.data,
+			cached: true,
+		});
+	}
 
 	const channelId = process.env.YOUTUBE_CHANNEL_ID;
 	const apiKey = process.env.YOUTUBE_API_KEY;
@@ -33,18 +47,21 @@ export default async function handler(req, res) {
 		if (!response.ok) {
 			throw new Error(reponse);
 		}
-		const data = await response.json();
-		const videos = data.items;
-
-		res.status(200).json( 
-			videos.map(video => ({
+		const videos = await response.json().items;
+		const data = videos.map(video => ({
 				id: video.id.videoId,
 				title: video.snippet.title,
 				description: video.snippet.description,
 				thumbnail: video.snippet.thumbnails.default.url,
 				publishedAt: video.snippet.publishedAt
-			}))
-		);
+			}));
+
+		res.status(200).json( {
+			data: data,
+			cached: false,
+		});
+		cache.data = data;
+		cache.timestamp = Date.now();
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
