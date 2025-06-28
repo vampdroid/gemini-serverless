@@ -19,9 +19,9 @@ export default async function handler(req, res) {
 		return res.status(405).json({ error: 'Only GET, OPTIONS allowed' });
 	}
 
-	const channelId = 'UCU8kHG85xraWf7N2dp8JRpQ';
-	const apiKey = process.env.YOUTUBE_API_KEY; // Ensure you set this in your environment variables
-	const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=1`;
+	const channelId = process.env.YOUTUTBE_CHANNEL_ID;
+	const apiKey = process.env.YOUTUBE_API_KEY;
+	const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=5`;
 
 	try {
 		const response = await fetch(apiUrl);
