@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
 	const channelId = 'UCU8kHG85xraWf7N2dp8JRpQ';
 	const apiKey = process.env.YOUTUBE_API_KEY; // Ensure you set this in your environment variables
-	const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=5`;
+	const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=5&type=video`;
 
 	try {
 		const response = await fetch(apiUrl);
