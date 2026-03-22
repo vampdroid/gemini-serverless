@@ -44,7 +44,7 @@ export default async function handler(req, res) {
 		} else {
 			query = `
 				query GetPosts($first: Int) {
-					posts(first: $first) {
+					posts(first: $first, where: { status: PUBLISH, orderby: { field: DATE, order: DESC } }) {
 						nodes {
 							id
 							title
