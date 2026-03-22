@@ -1,9 +1,4 @@
 
-let cache = {
-	posts: null,
-	timestamp: 0,
-	ttl: 1000 * 60 * 60 * 24 // 1 day
-};
 
 export default async function handler(req, res) {
 	// Set CORS headers
@@ -47,15 +42,6 @@ export default async function handler(req, res) {
 			`;
 			variables = { slug };
 		} else {
-			// Check cache for post list
-			const now = Date.now();
-			if (cache.posts && now - cache.timestamp < cache.ttl && !slug) {
-				return res.status(200).json({
-					data: cache.posts,
-					cached: true,
-				});
-			}
-
 			query = `
 				query GetPosts($first: Int) {
 					posts(first: $first) {
@@ -96,14 +82,9 @@ export default async function handler(req, res) {
 
 		const data = type === 'single' ? result.data.post : result.data.posts.nodes;
 
-		if (!type || type !== 'single') {
-			cache.posts = data;
-			cache.timestamp = Date.now();
-		}
 
 		res.status(200).json({
 			data: data,
-			cached: false,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
